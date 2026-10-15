@@ -16,8 +16,8 @@ int main(){
     scanf("%d", &dim);
 
     int* x = malloc(sizeof(int)*dim);
-    double* w = malloc(sizeof(int)*dim);
-    double* risSigmoidi = malloc(sizeof(int)*dim);
+    float* w = malloc(sizeof(int)*dim);
+    float* risSigmoidi = malloc(sizeof(int)*dim);
 
     riempiVettore(x, w, dim);
     stampaVettori(x, w, dim);
