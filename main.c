@@ -2,11 +2,14 @@
 #include <stdlib.h>
 #include <time.h>
 #include <math.h>
+
 void riempiVettore(int v1[], float v2[], int dim);
 void stampaVettori(int v1[], float v2[], int dim);
 float sommatoria(int v1[], float v2[], int dim);
 float sigmoide(float sum, int amp, int trasl);
 void insiemeDiSigmoidi(float v[], float sum, int amp, int trasl, int dim);
+float erroreQuadroSingolo(float target, float previsione);
+float erroreQuadraticoMedio(float target[], float previsioni[], int dim);
 
 int main(){
     srand(time(NULL));
@@ -16,8 +19,8 @@ int main(){
     scanf("%d", &dim);
 
     int* x = malloc(sizeof(int)*dim);
-    float* w = malloc(sizeof(int)*dim);
-    float* risSigmoidi = malloc(sizeof(int)*dim);
+    float* w = malloc(sizeof(float)*dim);         // Corretto: sizeof(float)
+    float* risSigmoidi = malloc(sizeof(float)*dim); // Corretto: sizeof(float)
 
     riempiVettore(x, w, dim);
     stampaVettori(x, w, dim);
@@ -30,6 +33,22 @@ int main(){
 
     insiemeDiSigmoidi(risSigmoidi, s, 1, 5, dim);
     printf("Insieme di sigmoidi popolato (primo elemento: %.2f)\n", risSigmoidi[0]);
+
+    // Esempio d'uso per testare le nuove funzioni (ipotizzando un vettore di target ideali a 1.0f)
+    float* target = malloc(sizeof(float) * dim);
+    for(int i = 0; i < dim; i++) target[i] = 1.0f; 
+
+    printf("\n--- Calcolo Errori ---\n");
+    float errore_singolo = erroreQuadroSingolo(target[0], risSigmoidi[0]);
+    printf("Scarto quadratico singolo (primo elemento): %.4f\n", errore_singolo);
+
+    float mse = erroreQuadraticoMedio(target, risSigmoidi, dim);
+    printf("Errore Quadratico Medio (MSE): %.4f\n", mse);
+
+    free(x);
+    free(w);
+    free(risSigmoidi);
+    free(target);
 
     return 0;
 }
@@ -76,4 +95,17 @@ void insiemeDiSigmoidi(float v[], float sum, int amp, int trasl, int dim){
     for (int i = 0; i < dim; ++i){
         v[i] = sigmoide(sum, amp, trasl);
     }
+}
+
+float erroreQuadroSingolo(float target, float previsione) {
+    float errore = target - previsione;
+    return errore * errore;
+}
+
+float erroreQuadraticoMedio(float target[], float previsioni[], int dim) {
+    float somma_errori = 0.0f;
+    for(int i = 0; i < dim; i++) {
+        somma_errori += erroreQuadroSingolo(target[i], previsioni[i]);
+    }
+    return somma_errori / dim;
 }
