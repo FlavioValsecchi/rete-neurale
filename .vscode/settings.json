@@ -1,0 +1,6 @@
+{
+    "code-runner.executorMap": {
+        "c": "cd \"$dir\" && gcc \"$fileName\" -g -I\"$dir\" -lm -o \"$fileNameWithoutExt\" && \"./$fileNameWithoutExt\""
+    },
+    "code-runner.runInTerminal": true
+}
